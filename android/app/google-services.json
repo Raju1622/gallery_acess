@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "566527832292",
+    "firebase_url": "https://gallery-d786d-default-rtdb.firebaseio.com",
+    "project_id": "gallery-d786d",
+    "storage_bucket": "gallery-d786d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566527832292:android:a8b35c3df8afad491abcf1",
+        "android_client_info": {
+          "package_name": "com.service.gallery_acess"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566527832292-j12vd82sjfe1940stb9v4n12q8kbhpe4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdZZ53WCTLGrm5BEze52_WzvkuajPDTA0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566527832292-j12vd82sjfe1940stb9v4n12q8kbhpe4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
