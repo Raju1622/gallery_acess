@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/google_sign_in_service.dart';
-import 'home_screen.dart';
+import 'main_navigation_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,10 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
       final success = await _googleSignInService.signInWithGoogle();
 
       if (success && mounted) {
-        // Login successful - Navigate to home screen
+        // Login successful - Navigate to main screen (skip Firestore for demo)
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
         );
       } else if (mounted) {
         // User canceled
@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
-                    Icons.photo_library,
+                    Icons.fitness_center,
                     size: 60,
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Welcome Text
                 Text(
-                  'Welcome to Payment Demo',
+                  'Welcome to Fitness App',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Sign in to continue',
+                  'Sign in to start your fitness journey',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.grey[600],
                       ),
