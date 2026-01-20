@@ -38,7 +38,40 @@ class _MyProgramsScreenState extends State<MyProgramsScreen> {
       purchasedAt: DateTime.now().subtract(const Duration(days: 5)),
       progressPercentage: 20,
     ),
+    Purchase(
+      id: 'p3',
+      userId: 'demo_user',
+      programId: '4',
+      programTitle: 'HIIT Extreme',
+      programCoverImageUrl: 'https://images.unsplash.com/photo-1434682881908-b43d0467b798?w=400',
+      price: 1299,
+      paymentId: 'pay_demo_003',
+      purchasedAt: DateTime.now().subtract(const Duration(days: 2)),
+      progressPercentage: 10,
+    ),
   ];
+
+  // Program details mapping for demo
+  final Map<String, Map<String, String>> _programDetails = {
+    '1': {
+      'duration': '4 Weeks',
+      'difficulty': 'Beginner',
+      'trainer': 'Rahul Sharma',
+      'description': 'A comprehensive 4-week program designed to help you burn fat effectively through a combination of cardio and strength training exercises.',
+    },
+    '3': {
+      'duration': '30 Days',
+      'difficulty': 'Beginner',
+      'trainer': 'Priya Patel',
+      'description': 'Start your day with energy and peace. This yoga program includes daily 30-minute sessions focusing on flexibility, balance, and mindfulness.',
+    },
+    '4': {
+      'duration': '6 Weeks',
+      'difficulty': 'Advanced',
+      'trainer': 'Amit Kumar',
+      'description': 'High-intensity interval training for maximum calorie burn. Short, intense workouts that fit into your busy schedule.',
+    },
+  };
 
   @override
   void initState() {
@@ -49,28 +82,27 @@ class _MyProgramsScreenState extends State<MyProgramsScreen> {
   Future<void> _loadPurchases() async {
     setState(() => _isLoading = true);
 
-    // Use hardcoded sample data for demo
     await Future.delayed(const Duration(milliseconds: 500));
 
     if (mounted) {
       setState(() {
-        _purchases = _samplePurchases;
+        _purchases = List.from(_samplePurchases);
         _isLoading = false;
       });
     }
   }
 
   Future<void> _updateProgress(Purchase purchase, int newProgress) async {
-    // Update locally for demo
     final index = _purchases.indexWhere((p) => p.id == purchase.id);
     if (index != -1) {
       setState(() {
         _purchases[index] = purchase.copyWith(progressPercentage: newProgress);
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Progress updated!'),
-          duration: Duration(seconds: 1),
+        SnackBar(
+          content: Text('Progress updated to $newProgress%!'),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 1),
         ),
       );
     }
@@ -79,75 +111,147 @@ class _MyProgramsScreenState extends State<MyProgramsScreen> {
   void _showProgressDialog(Purchase purchase) {
     int tempProgress = purchase.progressPercentage;
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
       builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
-          title: const Text('Update Progress'),
-          content: Column(
+        builder: (context, setDialogState) => Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Handle bar
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 24),
+
               Text(
-                '${tempProgress}%',
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                'Update Progress',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
                     ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
+              Text(
+                purchase.programTitle,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey[600],
+                    ),
+              ),
+              const SizedBox(height: 32),
+
+              // Progress Circle
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: 120,
+                    height: 120,
+                    child: CircularProgressIndicator(
+                      value: tempProgress / 100,
+                      strokeWidth: 12,
+                      backgroundColor: Colors.grey[300],
+                      color: _getProgressColor(tempProgress),
+                    ),
+                  ),
+                  Text(
+                    '$tempProgress%',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: _getProgressColor(tempProgress),
+                        ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 32),
+
+              // Slider
               Slider(
                 value: tempProgress.toDouble(),
                 min: 0,
                 max: 100,
                 divisions: 20,
+                activeColor: _getProgressColor(tempProgress),
                 label: '$tempProgress%',
                 onChanged: (value) {
                   setDialogState(() => tempProgress = value.toInt());
                 },
               ),
+              const SizedBox(height: 24),
+
+              // Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.all(16),
+                      ),
+                      child: const Text('Cancel'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _updateProgress(purchase, tempProgress);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(16),
+                        backgroundColor: _getProgressColor(tempProgress),
+                      ),
+                      child: const Text('Save'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _updateProgress(purchase, tempProgress);
-              },
-              child: const Text('Save'),
-            ),
-          ],
         ),
       ),
     );
   }
 
-  Future<void> _viewProgramDetails(Purchase purchase) async {
-    // Create a FitnessProgram from purchase data for demo
+  Color _getProgressColor(int progress) {
+    if (progress < 30) return Colors.red;
+    if (progress < 70) return Colors.orange;
+    return Colors.green;
+  }
+
+  void _viewProgramDetails(Purchase purchase) {
+    final details = _programDetails[purchase.programId] ?? {};
+
     final program = FitnessProgram(
       id: purchase.programId,
       title: purchase.programTitle,
-      description: 'This is your purchased program. Continue your fitness journey!',
+      description: details['description'] ?? 'Continue your fitness journey with this amazing program!',
       coverImageUrl: purchase.programCoverImageUrl,
       price: purchase.price,
-      duration: '4 Weeks',
-      difficultyLevel: 'Beginner',
-      trainerName: 'Fitness Trainer',
+      duration: details['duration'] ?? '4 Weeks',
+      difficultyLevel: details['difficulty'] ?? 'Beginner',
+      trainerName: details['trainer'] ?? 'Fitness Trainer',
       category: 'Fitness',
       createdAt: purchase.purchasedAt,
     );
 
-    if (mounted) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ProgramDetailsScreen(program: program),
-        ),
-      );
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ProgramDetailsScreen(program: program),
+      ),
+    );
   }
 
   @override
@@ -174,62 +278,119 @@ class _MyProgramsScreenState extends State<MyProgramsScreen> {
 
   Widget _buildEmptyState() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.fitness_center_outlined,
-            size: 80,
-            color: Colors.grey[400],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'No programs yet',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: Colors.grey[600],
-                ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Purchase a program to start your fitness journey',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.grey[500],
-                ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.fitness_center_outlined,
+                size: 64,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'No Programs Yet',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Purchase a program from Home to start your fitness journey!',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[600],
+                  ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildPurchaseCard(Purchase purchase) {
+    final details = _programDetails[purchase.programId] ?? {};
+    final progressColor = _getProgressColor(purchase.progressPercentage);
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       clipBehavior: Clip.antiAlias,
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: () => _viewProgramDetails(purchase),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Cover Image
-            SizedBox(
-              height: 150,
-              width: double.infinity,
-              child: purchase.programCoverImageUrl.isNotEmpty
-                  ? Image.network(
-                      purchase.programCoverImageUrl,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          color: Theme.of(context).colorScheme.primaryContainer,
-                          child: const Center(child: CircularProgressIndicator()),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
-                    )
-                  : _buildPlaceholderImage(),
+            // Cover Image with Progress Overlay
+            Stack(
+              children: [
+                SizedBox(
+                  height: 160,
+                  width: double.infinity,
+                  child: purchase.programCoverImageUrl.isNotEmpty
+                      ? Image.network(
+                          purchase.programCoverImageUrl,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return Container(
+                              color: Theme.of(context).colorScheme.primaryContainer,
+                              child: const Center(child: CircularProgressIndicator()),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(),
+                        )
+                      : _buildPlaceholderImage(),
+                ),
+                // Progress Badge
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: progressColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      '${purchase.progressPercentage}% Complete',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+                // Difficulty Badge
+                Positioned(
+                  top: 12,
+                  left: 12,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      details['difficulty'] ?? 'Beginner',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
 
             // Program Info
@@ -238,22 +399,47 @@ class _MyProgramsScreenState extends State<MyProgramsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    purchase.programTitle,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+                  // Title and View Details
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          purchase.programTitle,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
+                      ),
+                      Icon(Icons.chevron_right, color: Colors.grey[400]),
+                    ],
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    'Purchased on ${_formatDate(purchase.purchasedAt)}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.grey[600],
-                        ),
+
+                  // Trainer and Duration
+                  Row(
+                    children: [
+                      Icon(Icons.person_outline, size: 16, color: Colors.grey[600]),
+                      const SizedBox(width: 4),
+                      Text(
+                        details['trainer'] ?? 'Trainer',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey[600],
+                            ),
+                      ),
+                      const SizedBox(width: 16),
+                      Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
+                      const SizedBox(width: 4),
+                      Text(
+                        details['duration'] ?? '4 Weeks',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.grey[600],
+                            ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 16),
 
-                  // Progress Section
+                  // Progress Bar with Edit Button
                   Row(
                     children: [
                       Expanded(
@@ -264,31 +450,47 @@ class _MyProgramsScreenState extends State<MyProgramsScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Progress',
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  'Your Progress',
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                 ),
                                 Text(
                                   '${purchase.progressPercentage}%',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                         fontWeight: FontWeight.bold,
+                                        color: progressColor,
                                       ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 8),
-                            LinearProgressIndicator(
-                              value: purchase.progressPercentage / 100,
-                              backgroundColor: Colors.grey[300],
-                              borderRadius: BorderRadius.circular(4),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: LinearProgressIndicator(
+                                value: purchase.progressPercentage / 100,
+                                backgroundColor: Colors.grey[200],
+                                color: progressColor,
+                                minHeight: 8,
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      IconButton(
-                        onPressed: () => _showProgressDialog(purchase),
-                        icon: const Icon(Icons.edit),
-                        tooltip: 'Update Progress',
+                      const SizedBox(width: 12),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: IconButton(
+                          onPressed: () => _showProgressDialog(purchase),
+                          icon: Icon(
+                            Icons.edit,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          tooltip: 'Update Progress',
+                        ),
                       ),
                     ],
                   ),
@@ -312,9 +514,5 @@ class _MyProgramsScreenState extends State<MyProgramsScreen> {
         ),
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return '${date.day}/${date.month}/${date.year}';
   }
 }
