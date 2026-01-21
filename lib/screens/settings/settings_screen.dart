@@ -1,10 +1,12 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../constants/app_colors.dart';
 import '../../services/firestore_service.dart';
 import '../../services/google_sign_in_service.dart';
 import '../../models/user_profile.dart';
-import '../login_screen.dart';
+import '../splash_screen.dart';
 import 'edit_profile_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -120,7 +122,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await _googleSignInService.signOut();
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          MaterialPageRoute(builder: (_) => const SplashScreen()),
           (route) => false,
         );
       }
@@ -168,7 +170,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
           if (mounted) {
             Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (_) => const LoginScreen()),
+              MaterialPageRoute(builder: (_) => const SplashScreen()),
               (route) => false,
             );
           }
@@ -199,12 +201,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Container(
             margin: const EdgeInsets.only(right: 8),
             decoration: BoxDecoration(
-              color: Colors.red.withValues(alpha: 0.1),
+              color: AppColors.error.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(
               onPressed: _logout,
-              icon: Icon(Icons.logout, color: Colors.red[700]),
+              icon: const Icon(Icons.logout, color: AppColors.error),
               tooltip: 'Logout',
             ),
           ),
@@ -226,7 +228,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _buildSettingsCard([
                     _buildSettingsTile(
                       icon: Icons.person_outline,
-                      iconColor: Colors.blue,
+                      iconColor: AppColors.primary,
                       title: 'Edit Profile',
                       subtitle: 'Update your name and photo',
                       onTap: () async {
@@ -248,7 +250,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _buildSettingsCard([
                     _buildSettingsTile(
                       icon: Icons.mail_outline,
-                      iconColor: Colors.green,
+                      iconColor: AppColors.success,
                       title: 'Contact Support',
                       subtitle: _supportEmail,
                       onTap: _contactSupport,
@@ -262,14 +264,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _buildSettingsCard([
                     _buildSettingsTile(
                       icon: Icons.privacy_tip_outlined,
-                      iconColor: Colors.purple,
+                      iconColor: AppColors.secondary,
                       title: 'Privacy Policy',
                       onTap: () => _openUrl(_privacyPolicyUrl),
                     ),
-                    Divider(height: 1, color: Colors.grey[200]),
+                    const Divider(height: 1, color: AppColors.grey200),
                     _buildSettingsTile(
                       icon: Icons.description_outlined,
-                      iconColor: Colors.orange,
+                      iconColor: AppColors.warning,
                       title: 'Terms & Conditions',
                       onTap: () => _openUrl(_termsUrl),
                     ),
@@ -282,13 +284,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _buildSettingsCard([
                     _buildSettingsTile(
                       icon: Icons.delete_forever_outlined,
-                      iconColor: Colors.red,
+                      iconColor: AppColors.error,
                       title: 'Delete Account',
                       subtitle: 'Permanently delete your account',
-                      titleColor: Colors.red,
+                      titleColor: AppColors.error,
                       onTap: _deleteAccount,
                     ),
                   ]),
+                  const SizedBox(height: 40),
+
+                  // Branding Footer
+                  Center(
+                    child: Column(
+                      children: [
+                        const Text(
+                          'Taecaliso Health Heaven',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.grey600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Powered by Tryeno',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.grey500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 32),
                 ],
               ),
@@ -302,65 +329,126 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final photoUrl = _userProfile?.photoUrl ?? user?.photoURL ?? '';
 
     return Container(
-      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.secondary,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
+        gradient: AppColors.splashGradient,
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
+            color: AppColors.primary.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      child: Row(
+      child: Stack(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 3),
-            ),
-            child: CircleAvatar(
-              radius: 35,
-              backgroundColor: Colors.white,
-              backgroundImage: photoUrl.isNotEmpty ? NetworkImage(photoUrl) : null,
-              child: photoUrl.isEmpty
-                  ? Text(
-                      displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    )
-                  : null,
+          // Background decoration circles
+          Positioned(
+            top: -30,
+            right: -20,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.1),
+              ),
             ),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Positioned(
+            bottom: -20,
+            left: -20,
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.08),
+              ),
+            ),
+          ),
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
               children: [
-                Text(
-                  displayName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                // Glass avatar container
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white.withValues(alpha: 0.4),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.5),
+                      width: 2,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 35,
+                    backgroundColor: AppColors.white,
+                    backgroundImage: photoUrl.isNotEmpty ? NetworkImage(photoUrl) : null,
+                    child: photoUrl.isEmpty
+                        ? Text(
+                            displayName.isNotEmpty ? displayName[0].toUpperCase() : 'U',
+                            style: const TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
+                          )
+                        : null,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  email,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontSize: 14,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        displayName,
+                        style: const TextStyle(
+                          color: AppColors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      // Glass email container
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.email_outlined,
+                              size: 14,
+                              color: Colors.white.withValues(alpha: 0.9),
+                            ),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                email,
+                                style: TextStyle(
+                                  color: AppColors.white.withValues(alpha: 0.9),
+                                  fontSize: 12,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -376,10 +464,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       alignment: Alignment.centerLeft,
       child: Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 14,
           fontWeight: FontWeight.w600,
-          color: Colors.grey[600],
+          color: AppColors.grey600,
           letterSpacing: 0.5,
         ),
       ),
@@ -389,11 +477,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildSettingsCard(List<Widget> children) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.cardBackground,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: AppColors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -425,16 +513,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
         title,
         style: TextStyle(
           fontWeight: FontWeight.w600,
-          color: titleColor ?? Colors.black87,
+          color: titleColor ?? AppColors.black,
         ),
       ),
       subtitle: subtitle != null
           ? Text(
               subtitle,
-              style: TextStyle(color: Colors.grey[500], fontSize: 12),
+              style: const TextStyle(color: AppColors.grey500, fontSize: 12),
             )
           : null,
-      trailing: Icon(Icons.chevron_right, color: Colors.grey[400]),
+      trailing: const Icon(Icons.chevron_right, color: AppColors.grey400),
       onTap: onTap,
     );
   }

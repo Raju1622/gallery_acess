@@ -1,4 +1,7 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../constants/app_colors.dart';
 import '../../models/fitness_program.dart';
 import '../../models/announcement.dart';
 import '../program/program_details_screen.dart';
@@ -14,8 +17,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   List<FitnessProgram> _programs = [];
   List<Announcement> _announcements = [];
-  List<String> _categories = ['Weight Loss', 'Muscle Building', 'Yoga', 'Cardio', 'HIIT'];
+  final List<String> _categories = ['Weight Loss', 'Muscle Building', 'Yoga', 'Cardio', 'HIIT'];
   bool _isLoading = true;
+  final user = FirebaseAuth.instance.currentUser;
 
   TabController? _tabController;
 
@@ -284,17 +288,20 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final userName = user?.displayName?.split(' ').first ?? 'User';
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fitness Programs'),
-        centerTitle: true,
-      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: _loadData,
               child: CustomScrollView(
                 slivers: [
+                  // Custom App Bar with Welcome Header
+                  SliverToBoxAdapter(
+                    child: _buildWelcomeHeader(userName),
+                  ),
+
                   // Announcements Section
                   if (_announcements.isNotEmpty)
                     SliverToBoxAdapter(
@@ -315,6 +322,180 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 ],
               ),
             ),
+    );
+  }
+
+  Widget _buildWelcomeHeader(String userName) {
+    return Container(
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + 16,
+        left: 20,
+        right: 20,
+        bottom: 24,
+      ),
+      decoration: BoxDecoration(
+        gradient: AppColors.splashGradient,
+      ),
+      child: Stack(
+        children: [
+          // Background decoration circles
+          Positioned(
+            top: -60,
+            right: -40,
+            child: Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.1),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -30,
+            left: -30,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withValues(alpha: 0.08),
+              ),
+            ),
+          ),
+          // Content
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Hello $userName,',
+                          style: const TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.white,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Welcome to your fitness journey',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.white.withValues(alpha: 0.9),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Glass Avatar Container
+                  Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white.withValues(alpha: 0.4),
+                          Colors.white.withValues(alpha: 0.1),
+                        ],
+                      ),
+                    ),
+                    child: CircleAvatar(
+                      radius: 26,
+                      backgroundColor: AppColors.white,
+                      backgroundImage: user?.photoURL != null
+                          ? NetworkImage(user!.photoURL!)
+                          : null,
+                      child: user?.photoURL == null
+                          ? Text(
+                              userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                            )
+                          : null,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              // Glass branding card
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.white.withValues(alpha: 0.25),
+                          Colors.white.withValues(alpha: 0.1),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Icon(Icons.fitness_center, size: 20, color: AppColors.white),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Taecaliso Health Heaven',
+                                style: TextStyle(
+                                  color: AppColors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                'Your Fitness Partner',
+                                style: TextStyle(
+                                  color: AppColors.white,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          'by Tryeno',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontSize: 10,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -359,40 +540,67 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   child: Container(
                     width: 280,
                     margin: const EdgeInsets.only(right: 12),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          AppColors.primary.withValues(alpha: 0.15),
+                          AppColors.secondary.withValues(alpha: 0.08),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: AppColors.primary.withValues(alpha: 0.2),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                const Icon(Icons.campaign, size: 20, color: Colors.deepPurple),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    announcement.title,
-                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              ],
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                gradient: AppColors.buttonGradient,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Icon(Icons.campaign, size: 16, color: AppColors.white),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(width: 10),
                             Expanded(
                               child: Text(
-                                announcement.description,
-                                style: Theme.of(context).textTheme.bodySmall,
-                                maxLines: 2,
+                                announcement.title,
+                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primary,
+                                    ),
+                                maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
                         ),
-                      ),
+                        const SizedBox(height: 10),
+                        Expanded(
+                          child: Text(
+                            announcement.description,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: AppColors.grey600,
+                                ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -451,88 +659,188 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           ),
         );
       },
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Cover Image
-            Expanded(
-              flex: 3,
-              child: program.coverImageUrl.isNotEmpty
-                  ? Image.network(
-                      program.coverImageUrl,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          color: Theme.of(context).colorScheme.primaryContainer,
-                          child: const Center(child: CircularProgressIndicator()),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(program),
-                    )
-                  : _buildPlaceholderImage(program),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.cardBackground,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.08),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
             ),
-            // Program Info
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Cover Image with gradient overlay
+              Expanded(
+                flex: 3,
+                child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    Text(
-                      program.title,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    program.coverImageUrl.isNotEmpty
+                        ? Image.network(
+                            program.coverImageUrl,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      AppColors.primary.withValues(alpha: 0.3),
+                                      AppColors.secondary.withValues(alpha: 0.2),
+                                    ],
+                                  ),
+                                ),
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) => _buildPlaceholderImage(program),
+                          )
+                        : _buildPlaceholderImage(program),
+                    // Gradient overlay at bottom
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withValues(alpha: 0.3),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Difficulty badge
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: _getDifficultyColor(program.difficultyLevel),
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: _getDifficultyColor(program.difficultyLevel).withValues(alpha: 0.4),
+                              blurRadius: 6,
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          program.difficultyLevel,
+                          style: const TextStyle(
+                            fontSize: 9,
+                            color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      program.trainerName,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.grey[600],
-                          ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const Spacer(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '₹${program.price.toStringAsFixed(0)}',
-                          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: _getDifficultyColor(program.difficultyLevel),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            program.difficultyLevel,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+              // Program Info
+              Expanded(
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        program.title,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.black,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.person_outline,
+                            size: 12,
+                            color: AppColors.grey500,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              program.trainerName,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: AppColors.grey500,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              gradient: AppColors.buttonGradient,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '₹${program.price.toStringAsFixed(0)}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.white,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.schedule,
+                                size: 12,
+                                color: AppColors.grey500,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                program.duration,
+                                style: const TextStyle(
+                                  fontSize: 10,
+                                  color: AppColors.grey500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -540,12 +848,21 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Widget _buildPlaceholderImage(FitnessProgram program) {
     return Container(
-      color: Theme.of(context).colorScheme.primaryContainer,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.primary.withValues(alpha: 0.4),
+            AppColors.secondary.withValues(alpha: 0.3),
+          ],
+        ),
+      ),
       child: Center(
         child: Icon(
           _getCategoryIcon(program.category),
           size: 48,
-          color: Theme.of(context).colorScheme.primary,
+          color: AppColors.white,
         ),
       ),
     );
