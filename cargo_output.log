@@ -1,0 +1,54 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.tourtravels:tour-travels-website >----------------
+[INFO] Building Tour & Travels Website 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ war ]---------------------------------
+[WARNING] The artifact mysql:mysql-connector-java:jar:8.0.33 has been relocated to com.mysql:mysql-connector-j:jar:8.0.33: MySQL Connector/J artifacts moved to reverse-DNS compliant Maven 2+ coordinates.
+[INFO] 
+[INFO] --- clean:3.2.0:clean (default-clean) @ tour-travels-website ---
+[INFO] Deleting /Users/tryeno_team/Documents/GitHub/gallery_acess/target
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ tour-travels-website ---
+[INFO] skip non existing resourceDirectory /Users/tryeno_team/Documents/GitHub/gallery_acess/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ tour-travels-website ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 21 source files with javac [debug target 11] to target/classes
+[WARNING] location of system modules is not set in conjunction with -source 11
+  not setting the location of system modules may lead to class files that cannot run on JDK 11
+    --release 11 is recommended instead of -source 11 -target 11 because it sets the location of system modules automatically
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ tour-travels-website ---
+[INFO] skip non existing resourceDirectory /Users/tryeno_team/Documents/GitHub/gallery_acess/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.11.0:testCompile (default-testCompile) @ tour-travels-website ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.5.4:test (default-test) @ tour-travels-website ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- war:3.3.2:war (default-war) @ tour-travels-website ---
+[INFO] Packaging webapp
+[INFO] Assembling webapp [tour-travels-website] in [/Users/tryeno_team/Documents/GitHub/gallery_acess/target/deshdarshan]
+[INFO] Processing war project
+[INFO] Copying webapp resources [/Users/tryeno_team/Documents/GitHub/gallery_acess/src/main/webapp]
+[INFO] Building war: /Users/tryeno_team/Documents/GitHub/gallery_acess/target/deshdarshan.war
+[INFO] 
+[INFO] --- cargo:1.10.10:run (default-cli) @ tour-travels-website ---
+[INFO] [en3.ContainerRunMojo] Resolved container artifact org.codehaus.cargo:cargo-core-container-tomcat:jar:1.10.10 for container tomcat9x
+[INFO] [beddedLocalContainer] Tomcat 9.x Embedded starting...
+Apr 06, 2026 6:02:10 PM org.apache.coyote.AbstractProtocol init
+INFO: Initializing ProtocolHandler ["http-nio-8080"]
+Apr 06, 2026 6:02:10 PM org.apache.catalina.core.StandardService startInternal
+INFO: Starting service [Tomcat]
+Apr 06, 2026 6:02:10 PM org.apache.catalina.core.StandardEngine startInternal
+INFO: Starting Servlet engine: [Apache Tomcat/9.0.80]
+Apr 06, 2026 6:02:10 PM org.apache.coyote.AbstractProtocol start
+INFO: Starting ProtocolHandler ["http-nio-8080"]
+Apr 06, 2026 6:02:10 PM org.apache.catalina.startup.ContextConfig getDefaultWebXmlFragment
+INFO: No global web.xml found
+Apr 06, 2026 6:02:11 PM org.apache.jasper.servlet.TldScanner scanJars
+INFO: At least one JAR was scanned for TLDs yet contained no TLDs. Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+[INFO] [beddedLocalContainer] Tomcat 9.x Embedded started on port [8080]
+[INFO] Press Ctrl-C to stop the container...
