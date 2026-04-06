@@ -1,0 +1,554 @@
+/* BharatYatra - Professional Travel Website Styles */
+
+:root {
+    --primary: #2563eb;
+    --secondary: #7c3aed;
+    --accent: #f59e0b;
+    --success: #10b981;
+    --dark: #1f2937;
+    --light: #f3f4f6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    color: #333;
+}
+
+/* Navigation Bar */
+.navbar {
+    backdrop-filter: blur(10px);
+    background: rgba(37, 99, 235, 0.95) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.navbar-brand {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    animation: slideInDown 0.6s ease-out;
+}
+
+.navbar-brand i {
+    animation: bounce 2s infinite;
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%;
+    background: white;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-link:hover::after {
+    width: 80%;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.95) 0%, rgba(139, 92, 246, 0.95) 100%);
+    border-radius: 20px;
+    padding: 80px 40px;
+    margin: 30px 0 50px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+.hero-section h1 {
+    position: relative;
+    z-index: 1;
+    color: white;
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 20px rgba(0,0,0,0.2);
+    animation: slideInLeft 0.8s ease-out;
+}
+
+.hero-section .lead {
+    position: relative;
+    z-index: 1;
+    color: rgba(255,255,255,0.95);
+    font-size: 1.3rem;
+    animation: slideInRight 0.8s ease-out 0.2s both;
+}
+
+/* Search Box */
+.search-box {
+    position: relative;
+    z-index: 1;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.search-box .input-group {
+    background: white;
+    border-radius: 50px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.search-box .input-group:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+}
+
+.search-box input {
+    border: none;
+    padding: 18px 30px;
+    font-size: 1.1rem;
+    background: transparent;
+}
+
+.search-box input:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.search-box button {
+    padding: 18px 40px;
+    font-weight: 600;
+    background: var(--accent);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.search-box button:hover {
+    background: #d97706;
+    transform: scale(1.05);
+}
+
+/* Package Cards */
+.package-card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: white;
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.package-card:nth-child(1) { animation-delay: 0.1s; }
+.package-card:nth-child(2) { animation-delay: 0.2s; }
+.package-card:nth-child(3) { animation-delay: 0.3s; }
+.package-card:nth-child(4) { animation-delay: 0.4s; }
+.package-card:nth-child(5) { animation-delay: 0.5s; }
+.package-card:nth-child(6) { animation-delay: 0.6s; }
+
+.package-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.package-card .card-img-top {
+    height: 220px;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.package-card:hover .card-img-top {
+    transform: scale(1.1);
+}
+
+.package-card .card-body {
+    padding: 25px;
+}
+
+.package-card .badge {
+    padding: 8px 15px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border-radius: 20px;
+    animation: pulse 2s infinite;
+}
+
+.package-card .card-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 15px 0 10px;
+}
+
+.package-card .btn {
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.package-card .btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.package-card .btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.price-tag {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--success);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Features Section */
+.features-section {
+    background: white;
+    border-radius: 20px;
+    padding: 60px 40px;
+    margin: 40px 0;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.feature-box {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.feature-box:nth-child(1) { animation-delay: 0.2s; }
+.feature-box:nth-child(2) { animation-delay: 0.3s; }
+.feature-box:nth-child(3) { animation-delay: 0.4s; }
+.feature-box:nth-child(4) { animation-delay: 0.5s; }
+
+.feature-box:hover {
+    transform: translateY(-10px);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.feature-box i {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.feature-box:hover i {
+    transform: scale(1.2) rotateY(360deg);
+}
+
+/* Package Details Page */
+.package-header {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.95) 0%, rgba(124, 58, 237, 0.95) 100%);
+    color: white;
+    padding: 60px 0;
+    margin: -20px -15px 40px;
+    border-radius: 0 0 30px 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    animation: slideInDown 0.6s ease-out;
+}
+
+.detail-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out;
+    background: white;
+}
+
+.detail-card .card-body {
+    padding: 30px;
+}
+
+.highlights-list {
+    list-style: none;
+    padding: 0;
+}
+
+.highlights-list li {
+    padding: 15px 0;
+    border-bottom: 1px solid #e5e7eb;
+    position: relative;
+    padding-left: 40px;
+    transition: all 0.3s ease;
+}
+
+.highlights-list li:hover {
+    padding-left: 50px;
+    color: var(--primary);
+}
+
+.highlights-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--success);
+    font-weight: bold;
+    font-size: 1.5rem;
+    animation: checkmark 0.6s ease-out;
+}
+
+/* Booking Form */
+.booking-form {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    animation: fadeInLeft 0.6s ease-out;
+}
+
+.booking-form .form-control,
+.booking-form .form-select {
+    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+    padding: 12px 20px;
+    transition: all 0.3s ease;
+}
+
+.booking-form .form-control:focus,
+.booking-form .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    transform: translateY(-2px);
+}
+
+.price-summary {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 100px;
+    animation: fadeInRight 0.6s ease-out;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes checkmark {
+    0% { transform: scale(0) rotate(45deg); }
+    50% { transform: scale(1.2) rotate(45deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Loading Animation */
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f4f6;
+    border-top: 5px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .hero-section .lead {
+        font-size: 1rem;
+    }
+
+    .package-card {
+        margin-bottom: 20px;
+    }
+
+    .price-summary {
+        position: static;
+        margin-top: 30px;
+    }
+}
+
+/* Hover Effects */
+.hover-lift {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* Footer */
+footer {
+    background: rgba(31, 41, 55, 0.95);
+    backdrop-filter: blur(10px);
+    margin-top: 60px;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary);
+}
+
+/* Smooth Scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Button Ripple Effect */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-ripple:active::after {
+    width: 300px;
+    height: 300px;
+}

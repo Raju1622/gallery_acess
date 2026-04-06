@@ -1,0 +1,4 @@
+jdbc.url=jdbc:mysql://localhost:3306/deshdarshan?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=UTF-8
+jdbc.username=root
+jdbc.password=your_password
+jdbc.driver=com.mysql.cj.jdbc.Driver
